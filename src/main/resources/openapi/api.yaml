@@ -1,0 +1,159 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Discount Management API
+paths:
+  /discount:
+    get:
+      summary: Get discount for requested product count
+      operationId: getDiscount
+      tags:
+        - discount
+      parameters:
+        - name: productID
+          in: query
+          description: Unique product UUID identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: productCount
+          in: query
+          description: Ordered product count
+          required: true
+          schema:
+            type: integer
+            format: int64
+            maximum: 1000
+      responses:
+        '200':
+          description: A discount information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Discount"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /discounts:
+    get:
+      summary: Get discounts for requested products and his counts
+      operationId: getDiscounts
+      tags:
+        - discount
+      parameters:
+        - name: productIDs
+          in: query
+          description: Unique product UUID identifier
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+              format: uuid
+        - name: productCount
+          in: query
+          description: Ordered product count
+          required: true
+          schema:
+            type: integer
+            format: int64
+            maximum: 1000
+      responses:
+        '200':
+          description: A discount information
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Discount"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /policies:
+    get:
+      summary: List of polices
+      operationId: getPolicies
+      tags:
+        - policy
+      responses:
+        '200':
+          description: A available policies list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Policy"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+components:
+  schemas:
+    Discount:
+      type: object
+      properties:
+        product:
+          $ref: '#/components/schemas/Product'
+        orderCount:
+          type: integer
+          maximum: 1000
+          format: int64
+        discount:
+          $ref: '#/components/schemas/Price'
+        policies:
+          type: array
+          items:
+            $ref: '#/components/schemas/Policy'
+    Product:
+      type: object
+      required:
+        - id
+        - name
+        - price
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        price:
+          $ref: '#/components/schemas/Price'
+    Policy:
+      type: string
+      enum: [ "POLICY1", "POLICY2" ]
+    Price:
+      type: object
+      required:
+        - value
+        - denomination
+      properties:
+        value:
+          type: number
+          format: currency
+        denomination:
+          type: string
+          enum: [ "PLN","USD","EUR" ]
+    Error:
+      type: object
+      required:
+        - code
+        - message
+        - correlationId
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+        correlationId:
+          type: string
+          format: uuid

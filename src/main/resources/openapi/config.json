@@ -1,0 +1,16 @@
+{
+  "library": "spring-boot",
+  "dateLibrary": "java18",
+  "hideGenerationTimestamp": true,
+  "modelPackage": "pl.inpost.api.model",
+  "apiPackage": "pl.inpost.api",
+  "invokerPackage": "pl.inpost.api",
+  "serializableModel": true,
+  "openApiNullable": false,
+  "useTags": true,
+  "useGzipFeature" : true,
+  "unhandledException": true,
+  "useSpringBoot3": true,
+  "useSwaggerUI": true,
+  "interfaceOnly": true
+}
