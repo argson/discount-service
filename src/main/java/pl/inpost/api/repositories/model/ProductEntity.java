@@ -1,14 +1,10 @@
-package pl.inpost.api.persistance.model;
+package pl.inpost.api.repositories.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
-import pl.inpost.api.model.Policy;
-import pl.inpost.api.model.Price;
-import pl.inpost.api.model.Product;
+import pl.inpost.api.domain.model.Price;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -17,14 +13,18 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 public class ProductEntity {
+    @NonNull
     @Id()
-    @GeneratedValue(strategy = GenerationType.UUID)
+    //@GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @NonNull
     private String name;
 
+    @NonNull
     private BigDecimal price;
 
+    @NonNull
     @Enumerated(EnumType.ORDINAL)
     private Price.DenominationEnum priceDenomination;
 }

@@ -12,7 +12,7 @@ paths:
       parameters:
         - name: productID
           in: query
-          description: Unique product UUID identifier
+          description: Unique product UUID identifier (ex. 43bcc57b-4538-411f-8f4c-6af4cf046786, feea4b6c-cf3d-4dfc-ae41-49dd9e6b3d5d)
           required: true
           schema:
             type: string
@@ -25,58 +25,27 @@ paths:
             type: integer
             format: int64
             maximum: 1000
-      responses:
-        '200':
-          description: A discount information
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Discount"
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-  /discounts:
-    get:
-      summary: Get discounts for requested products and his counts
-      operationId: getDiscounts
-      tags:
-        - discount
-      parameters:
-        - name: productIDs
+        - name: discountPolicy
           in: query
-          description: Unique product UUID identifier
+          description: Policy to apply discount. You can apply more then one policy.
           required: true
           schema:
             type: array
             items:
-              type: string
-              format: uuid
-        - name: productCount
-          in: query
-          description: Ordered product count
-          required: true
-          schema:
-            type: integer
-            format: int64
-            maximum: 1000
+              $ref: '#/components/schemas/PolicyDTO'
       responses:
         '200':
           description: A discount information
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Discount"
+                $ref: "#/components/schemas/DiscountDTO"
         default:
           description: unexpected error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "#/components/schemas/ErrorDTO"
   /policies:
     get:
       summary: List of polices
@@ -89,31 +58,33 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Policy"
+                type: array
+                items:
+                  $ref: "#/components/schemas/PolicyDTO"
         default:
           description: unexpected error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "#/components/schemas/ErrorDTO"
 components:
   schemas:
-    Discount:
+    DiscountDTO:
       type: object
       properties:
         product:
-          $ref: '#/components/schemas/Product'
+          $ref: '#/components/schemas/ProductDTO'
         orderCount:
           type: integer
           maximum: 1000
           format: int64
         discount:
-          $ref: '#/components/schemas/Price'
+          $ref: '#/components/schemas/PriceDTO'
         policies:
           type: array
           items:
-            $ref: '#/components/schemas/Policy'
-    Product:
+            $ref: '#/components/schemas/PolicyDTO'
+    ProductDTO:
       type: object
       required:
         - id
@@ -126,11 +97,13 @@ components:
         name:
           type: string
         price:
-          $ref: '#/components/schemas/Price'
-    Policy:
+          $ref: '#/components/schemas/PriceDTO'
+    PolicyDTO:
       type: string
-      enum: [ "POLICY1", "POLICY2" ]
-    Price:
+      enum:
+        - AMOUNT_BASED
+        - PERCENTAGE_BASED
+    PriceDTO:
       type: object
       required:
         - value
@@ -142,7 +115,7 @@ components:
         denomination:
           type: string
           enum: [ "PLN","USD","EUR" ]
-    Error:
+    ErrorDTO:
       type: object
       required:
         - code

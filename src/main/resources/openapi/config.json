@@ -2,7 +2,7 @@
   "library": "spring-boot",
   "dateLibrary": "java18",
   "hideGenerationTimestamp": true,
-  "modelPackage": "pl.inpost.api.model",
+  "modelPackage": "pl.inpost.api.dto.model",
   "apiPackage": "pl.inpost.api",
   "invokerPackage": "pl.inpost.api",
   "serializableModel": true,
