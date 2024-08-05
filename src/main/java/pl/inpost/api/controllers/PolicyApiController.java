@@ -1,8 +1,9 @@
-package pl.inpost.api;
+package pl.inpost.api.controllers;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+import pl.inpost.api.PolicyApi;
 import pl.inpost.api.dto.model.PolicyDTO;
 
 import java.util.List;
