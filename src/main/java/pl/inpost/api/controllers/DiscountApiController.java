@@ -29,7 +29,7 @@ public class DiscountApiController implements DiscountApi {
                 .map(policyDTOMapper::mapFrom)
                 .toList();
         var discount = discountService.calculateDiscount(productID, productCount, policyList);
-        log.info("Discount for product {} calculated",productID);
-        return ResponseEntity.ok(discountDTOMapper.map(discount));
+        log.info("Discount for product {} has been calculated.",productID);
+        return ResponseEntity.ok(discountDTOMapper.mapTo(discount));
     }
 }

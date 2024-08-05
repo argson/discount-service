@@ -107,7 +107,7 @@ components:
     PriceDTO:
       type: object
       required:
-        - value
+        - price
         - denomination
       properties:
         value:

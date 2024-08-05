@@ -6,5 +6,5 @@ import pl.inpost.api.dto.model.DiscountDTO;
 
 @Mapper(componentModel = "spring")
 public interface DiscountDTOMapper {
-    DiscountDTO map(Discount source);
+    DiscountDTO mapTo(Discount source);
 }
