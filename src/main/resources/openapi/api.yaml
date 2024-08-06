@@ -3,10 +3,10 @@ info:
   version: 1.0.0
   title: Discount Management API
 paths:
-  /discount:
+  /calculate-discount:
     get:
-      summary: Get discount for requested product count
-      operationId: getDiscount
+      summary: Calculate discount for requested product count
+      operationId: calculateDiscount
       tags:
         - discount
       parameters:
@@ -47,12 +47,95 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorDTO"
-  /policies:
+  /policy/discounts-levels:
+    get:
+      summary: Get discount levels for policy
+      operationId: getDiscountLevels
+      tags:
+        - discountPolicy
+      parameters:
+        - name: policy
+          in: query
+          description: Policy for discounts
+          required: true
+          schema:
+            $ref: '#/components/schemas/PolicyDTO'
+      responses:
+        '200':
+          description: DiscountsLevel
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DiscountLevelDTO"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDTO"
+    post:
+      summary: Add/Change DiscountLevel
+      operationId: changeDiscountLevel
+      tags:
+        - discountPolicy
+      parameters:
+        - name: policy
+          in: query
+          description: Policy for discounts
+          required: true
+          schema:
+            $ref: '#/components/schemas/PolicyDTO'
+        - name: discountLevel
+          in: query
+          description: product count threshold to remove
+          required: true
+          schema:
+            $ref: '#/components/schemas/DiscountLevelDTO'
+      responses:
+        '201':
+          description: DiscountLeve has been add or changed
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDTO"
+    delete:
+      summary: Delete discount level
+      operationId: deleteDiscountLevel
+      tags:
+        - discountPolicy
+      parameters:
+        - name: policy
+          in: query
+          description: Policy for DiscountLevel
+          required: true
+          schema:
+            $ref: '#/components/schemas/PolicyDTO'
+        - name: productCountThreshold
+          in: query
+          description: product count threshold to remove
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '201':
+          description: DiscountLeve has been removed
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDTO"
+  /policy:
     get:
       summary: List of polices
       operationId: getPolicies
       tags:
-        - policy
+        - discountPolicy
       responses:
         '200':
           description: A available policies list
@@ -119,6 +202,15 @@ components:
             - PLN
             - USD
             - EUR
+    DiscountLevelDTO:
+      type: object
+      properties:
+        productCountThreshold:
+          type: number
+          format: int64
+        discountValue:
+          type: string
+          format: json
     ErrorDTO:
       type: object
       required:

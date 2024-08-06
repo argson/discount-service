@@ -17,7 +17,7 @@ public class OpenAPIConfig {
     public OpenAPI myOpenAPI() {
 
         var local = new Server();
-        local.setUrl("http://localhost:8080");
+        local.setUrl("http://localhost:8080/");
         local.setDescription("Local development of petstore");
 
 
