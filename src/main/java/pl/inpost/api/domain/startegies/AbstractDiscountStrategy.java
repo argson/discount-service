@@ -2,28 +2,38 @@ package pl.inpost.api.domain.startegies;
 
 import lombok.NonNull;
 import pl.inpost.api.domain.model.DiscountLevel;
+import pl.inpost.api.domain.model.DiscountParameter;
 import pl.inpost.api.domain.model.Price;
+import pl.inpost.api.domain.services.DiscountLevelService;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
-public abstract class AbstractDiscountStrategy<T> implements DiscountStrategy{
-    protected Optional<T> discountValue;
+public abstract class AbstractDiscountStrategy implements DiscountStrategy {
+    protected List<DiscountParameter> discountParameters;
 
-    protected AbstractDiscountStrategy(Long productCount, List<DiscountLevel<T>> discountLevels) {
-        discountValue = discountLevels.stream()
+    protected AbstractDiscountStrategy(@NonNull Long productCount,
+                                       @NonNull DiscountLevelService discountLevelService) {
+        var discountLevels = discountLevelService.getDiscountLevels();
+        discountParameters = discountLevels.stream()
                 .filter(dl -> dl.productCount().compareTo(productCount) <= 0)
                 .max(DiscountLevel::compareTo)
-                .map(DiscountLevel::discountValue);
+                .map(DiscountLevel::discountParameters)
+                .orElse(Collections.emptyList());
     }
 
     @Override
     public Price calculateDiscount(Price inputPrice) {
-        return discountValue
-                .map(discount -> applyDiscount(discount, inputPrice))
-                .orElse(inputPrice);
+        validateParameters(discountParameters);
+        return applyDiscount(discountParameters, inputPrice);
     }
 
+
+
     @NonNull
-    abstract protected Price applyDiscount(@NonNull T discountValue, @NonNull Price inputPrice);
+    abstract protected Price applyDiscount(@NonNull List<DiscountParameter> discountParameters,
+                                           @NonNull Price inputPrice);
+
+
+    abstract void validateParameters(List<DiscountParameter> discountParameters);
 }

@@ -1,8 +1,13 @@
 package pl.inpost.api.domain.model;
 
-public record DiscountLevel<T>(Long productCount, T discountValue) implements Comparable<DiscountLevel> {
+import java.util.List;
+
+public record DiscountLevel(Long productCount,
+                            List<DiscountParameter> discountParameters,
+                            Policy policy) implements Comparable<DiscountLevel> {
     @Override
-    public int compareTo(DiscountLevel o) {
-        return this.productCount.compareTo(productCount);
+    public int compareTo(DiscountLevel discountLevel) {
+        return this.productCount.compareTo(discountLevel.productCount());
     }
+
 }

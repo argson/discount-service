@@ -1,4 +1,4 @@
-package pl.inpost.api.repositories.model;
+package pl.inpost.api.domain.repositories.model;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -15,7 +15,6 @@ import java.util.UUID;
 public class ProductEntity {
     @NonNull
     @Id()
-    //@GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @NonNull
@@ -25,6 +24,6 @@ public class ProductEntity {
     private BigDecimal price;
 
     @NonNull
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private Price.DenominationEnum priceDenomination;
 }

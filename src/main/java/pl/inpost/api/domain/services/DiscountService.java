@@ -15,12 +15,13 @@ import java.util.UUID;
 @Service
 @AllArgsConstructor
 public class DiscountService implements ApiInterface {
-    private final ProductsService productsService;
+    private final ProductService productService;
+    private final StrategyConfiguration strategyConfiguration;
 
     public Discount calculateDiscount(@NonNull UUID productId,
                                       @NonNull Long productCount,
                                       @NonNull List<Policy> policies) {
-        var product = productsService.getProduct(productId);
+        var product = productService.getProduct(productId);
 
         var finalDiscount = product.getPrice();
         List<DiscountStrategy> discountStrategies = getDiscountStrategies(productCount, policies);
@@ -39,7 +40,7 @@ public class DiscountService implements ApiInterface {
     private List<DiscountStrategy> getDiscountStrategies(@NonNull Long productCount,
                                                          @NonNull List<Policy> policies) {
         var discountStrategies = policies.stream()
-                .map(p -> StrategyConfiguration.map(p, productCount))
+                .map(p -> strategyConfiguration.map(p, productCount))
                 .toList();
         return discountStrategies;
     }

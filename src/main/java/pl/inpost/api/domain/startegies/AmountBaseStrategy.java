@@ -1,42 +1,46 @@
 package pl.inpost.api.domain.startegies;
 
 import lombok.NonNull;
-import pl.inpost.api.domain.model.DiscountLevel;
+import pl.inpost.api.domain.model.DiscountParameter;
 import pl.inpost.api.domain.model.Price;
+import pl.inpost.api.domain.services.DiscountLevelService;
 
-import java.math.BigDecimal;
 import java.util.List;
 
-import static pl.inpost.api.domain.model.Price.DenominationEnum.PLN;
+import static pl.inpost.api.domain.helpers.DiscountParameterHelper.*;
+import static pl.inpost.api.domain.model.DiscountParameter.ParameterName.DENOMINATION;
+import static pl.inpost.api.domain.model.DiscountParameter.ParameterName.PRICE;
 
-public class AmountBaseStrategy extends AbstractDiscountStrategy<Price> {
-    private static final List<DiscountLevel<Price>> discountLevels = List.of(
-            new DiscountLevel(10L, getPrice(2, PLN)),
-            new DiscountLevel(100L, getPrice(5, PLN)),
-            new DiscountLevel(1000L, getPrice(10, PLN))
-    );
+public class AmountBaseStrategy extends AbstractDiscountStrategy {
 
-    public AmountBaseStrategy(Long productCount) {
-        super(productCount, discountLevels);
+
+    public AmountBaseStrategy(@NonNull Long productCount,
+                              @NonNull DiscountLevelService discountLevelService) {
+        super(productCount, discountLevelService);
     }
 
-    @NonNull
-    protected Price applyDiscount(@NonNull Price discountValue, @NonNull Price inputPrice) {
-        if (inputPrice.getDenomination() != discountValue.getDenomination()) {
-            throw new IllegalStateException(String.format("Discount AmountBase can be apply only for the same currency denominations! Discount denomination %s != %s", inputPrice.getDenomination(), discountValue.getDenomination()));
+    @Override
+    protected @NonNull Price applyDiscount(@NonNull List<DiscountParameter> discountParameters,
+                                           @NonNull Price inputPrice) {
+        var denomination = getDenomination(discountParameters);
+        var priceValue = getPriceValue(discountParameters);
+        if (inputPrice.getDenomination() != denomination) {
+            throw new IllegalStateException(String.format("Discount AmountBase can be apply only for the same currency denominations! Product price denomination is %s but discount expect %s.", inputPrice.getDenomination(), denomination));
         }
-        var priceAfterDiscount = inputPrice.getValue().subtract(discountValue.getValue());
+        var priceAfterDiscount = inputPrice.getValue().subtract(priceValue);
         return Price.builder()
                 .value(priceAfterDiscount)
                 .denomination(inputPrice.getDenomination())
                 .build();
     }
 
-    @NonNull
-    private static Price getPrice(@NonNull Integer priceValue, @NonNull Price.DenominationEnum denomination) {
-        return Price.builder()
-                .value(BigDecimal.valueOf(priceValue))
-                .denomination(denomination)
-                .build();
+    @Override
+    void validateParameters(@NonNull List<DiscountParameter> discountParameters) {
+        if (isUnavailableParameter(discountParameters, PRICE)) {
+            throw new IllegalStateException("Expected parameter PRICE for AmountBase discount policy!");
+        }
+        if (isUnavailableParameter(discountParameters, DENOMINATION)) {
+            throw new IllegalStateException("Expected parameter PRICE for AmountBase discount policy!");
+        }
     }
 }

@@ -1,17 +1,19 @@
 package pl.inpost.api.domain.model;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Builder
 @Getter
 @ToString
 @EqualsAndHashCode
-public class Price {
+@NoArgsConstructor
+@AllArgsConstructor
+public class Price implements Serializable {
+    static final long serialVersionUID = 42L;
+
     private BigDecimal value;
     private DenominationEnum denomination;
 
