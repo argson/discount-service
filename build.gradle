@@ -14,7 +14,7 @@ setVersion('1.0')
 
 
 java {
-	sourceCompatibility = '18'
+	sourceCompatibility = '17'
 }
 jar {
 	enabled = false
@@ -36,10 +36,10 @@ processResources {
 
 swaggerSources {
 	main {
-		inputFile = file("${rootDir}/src/main/resources/openapi/api.yaml")
+		inputFile = file("${rootDir}/openapi/api.yaml")
 		code {
 			language = 'spring'
-			configFile = file("${rootDir}/src/main/resources/openapi/config.json")
+			configFile = file("${rootDir}/openapi/config.json")
 			//what to generate. Optional.
 			components = [
 					'models' ,
