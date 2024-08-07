@@ -20,13 +20,20 @@ Container expose on port 8080 service http://localhost:8080/
 
 # Assumptions
 
-- Max parallel client number should not exceed 200 for more clients we should consider change architecture on reactive webservice
-- Service persist state in H2 database and after reboot lose state. If will be necessary change not lose state should change DBMS
+- Max parallel client number should not exceed 200 on one service instance. For more parallel clients handling we should consider vertical(for ex. change architecture on reactive webservice) and horizontal(more instances) scaling
+- Service persist state in H2 database and after reboot lose state. To scale application we have to change persistence layer on different DBMS or external services
+- Application has not any security management so should work only inside local network  
+- IMPORTANT!!!
+  On this step of implementation configuration regarding available Products and DiscountPolicyLevels can be change only in code in class: `pl/inpost/api/config/AppInit.java`
+  - endpoints `POST /policy/discountLevel` and `DELETE /policy/discountLevel` to change and delete these configurations are defined but not implemented yet
+  - Only DiscountService's has test coverage which prove correct of discount calculations
+  - Integration test and unit test for rest mappers will be implement in next steps
+
 
 # Configuration
 
 - After start service init database with default configuration:
-  - Two Policies:
+  - Policies:
     ```
     AMOUNT_BASE
     PERCENTAGE_BASE
@@ -36,7 +43,7 @@ Container expose on port 8080 service http://localhost:8080/
        id: 43bcc57b-4538-411f-8f4c-6af4cf046786	name: Product1	price: 100 PLN
        id: feea4b6c-cf3d-4dfc-ae41-49dd9e6b3d5d	name: Product2	price: 50 PLN
     ```
-  - DiscountLevels
+  - DiscountPolicyLevels
     ```
        productCountThreshold: 10	parameters: PRICE:2.0 | DENOMINATION:PLN	policy: AMOUNT_BASED
        productCountThreshold: 100	parameters: PRICE:5.0 | DENOMINATION:PLN	policy: AMOUNT_BASED
@@ -45,6 +52,4 @@ Container expose on port 8080 service http://localhost:8080/
        productCountThreshold: 50	parameters: PERCENTAGE:7	policy: PERCENTAGE_BASED
        productCountThreshold: 100	parameters: PERCENTAGE:10	policy: PERCENTAGE_BASED 
       ```
-  - On this step of implementation configuration can be change only from code in class: `pl/inpost/api/config/AppInit.java`
-    - endpoints `POST /policy/discountLevel` and `DELETE /policy/discountLevel` to change and delete these configurations are defined but not implemented yet
   
