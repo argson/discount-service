@@ -6,9 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import pl.inpost.api.DiscountApi;
-import pl.inpost.api.domain.services.DiscountService;
-import pl.inpost.api.dto.mappers.DiscountDTOMapper;
-import pl.inpost.api.dto.mappers.PolicyDTOMapper;
+import pl.inpost.api.controllers.mappers.DiscountDTOMapper;
+import pl.inpost.api.controllers.mappers.PolicyDTOMapper;
+import pl.inpost.api.domain.services.DiscountServiceInterface;
 import pl.inpost.api.dto.model.DiscountDTO;
 import pl.inpost.api.dto.model.PolicyDTO;
 
@@ -19,7 +19,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Slf4j
 public class DiscountApiController implements DiscountApi {
-    private final DiscountService discountService;
+    private final DiscountServiceInterface discountServiceInterface;
     private final DiscountDTOMapper discountDTOMapper;
     private final PolicyDTOMapper policyDTOMapper;
 
@@ -28,7 +28,7 @@ public class DiscountApiController implements DiscountApi {
         var policyList = discountPolicy.stream()
                 .map(policyDTOMapper::mapFrom)
                 .toList();
-        var discount = discountService.calculateDiscount(productID, productCount, policyList);
+        var discount = discountServiceInterface.calculateDiscount(productID, productCount, policyList);
         log.info("Discount for product {} has been calculated.", productID);
         return ResponseEntity.ok(discountDTOMapper.mapTo(discount));
     }

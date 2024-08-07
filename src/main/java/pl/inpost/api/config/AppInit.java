@@ -6,8 +6,8 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 import pl.inpost.api.domain.model.*;
-import pl.inpost.api.domain.repositories.service.DiscountLevelDAOService;
-import pl.inpost.api.domain.repositories.service.ProductDAOService;
+import pl.inpost.api.repositories.DiscountLevelDAOInterface;
+import pl.inpost.api.repositories.ProductDAOInterface;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -22,8 +22,8 @@ import static pl.inpost.api.domain.model.Price.DenominationEnum.PLN;
 @AllArgsConstructor
 @Slf4j
 public class AppInit implements ApplicationListener<ApplicationReadyEvent> {
-    private final ProductDAOService productDAOService;
-    private final DiscountLevelDAOService discountLevelDAOService;
+    private final ProductDAOInterface productDAOInterface;
+    private final DiscountLevelDAOInterface discountLevelDAOInterface;
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
@@ -60,15 +60,15 @@ public class AppInit implements ApplicationListener<ApplicationReadyEvent> {
         );
 
         log.info("Populate product database");
-        var savedProducts = productDAOService.save(products);
+        var savedProducts = productDAOInterface.save(products);
         log.info("Database saved products:");
         savedProducts.forEach(product -> log.info("id: {}\tname: {}\tprice: {} {}", product.getId(), product.getName(), product.getPrice().getValue(), product.getPrice().getDenomination()));
 
-        List<DiscountLevel> savedDiscountLevels = discountLevelDAOService.save(amountDiscountLevels);
+        List<DiscountLevel> savedDiscountLevels = discountLevelDAOInterface.save(amountDiscountLevels);
         log.info("Database saved discountLevels:");
         savedDiscountLevels.forEach(dl -> log.info("productCountThreshold: {}\tparameters: {}\tpolicy: {}", dl.productCountThreshold(), printParameters(dl.discountParameters()), dl.policy()));
 
-        List<DiscountLevel> savedPercentageDiscountLevels = discountLevelDAOService.save(percentageDiscountLevels);
+        List<DiscountLevel> savedPercentageDiscountLevels = discountLevelDAOInterface.save(percentageDiscountLevels);
         savedPercentageDiscountLevels.forEach(dl -> log.info("productCountThreshold: {}\tparameters: {}\tpolicy: {}", dl.productCountThreshold(), printParameters(dl.discountParameters()), dl.policy()));
 
     }

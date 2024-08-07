@@ -1,6 +1,9 @@
 package pl.inpost.api.domain.model;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.util.List;
 

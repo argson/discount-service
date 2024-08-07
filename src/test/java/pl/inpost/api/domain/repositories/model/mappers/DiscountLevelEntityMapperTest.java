@@ -8,8 +8,8 @@ import org.mapstruct.factory.Mappers;
 import pl.inpost.api.domain.model.DiscountLevel;
 import pl.inpost.api.domain.model.Policy;
 import pl.inpost.api.domain.model.Price;
-import pl.inpost.api.domain.repositories.mappers.DiscountLevelEntityMapper;
-import pl.inpost.api.domain.repositories.model.DiscountLevelEntity;
+import pl.inpost.api.repositories.mappers.DiscountLevelEntityMapper;
+import pl.inpost.api.repositories.model.DiscountLevelEntity;
 
 import static pl.inpost.api.domain.helpers.DiscountParameterHelper.discountParameterForAmount;
 import static pl.inpost.api.domain.helpers.DiscountParameterHelper.discountParameterForPercentage;

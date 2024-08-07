@@ -3,20 +3,19 @@ package pl.inpost.api.domain.services;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.stereotype.Service;
-import pl.inpost.api.domain.ApiInterface;
 import pl.inpost.api.domain.model.Discount;
 import pl.inpost.api.domain.model.Policy;
-import pl.inpost.api.domain.startegies.DiscountStrategy;
-import pl.inpost.api.domain.startegies.StrategyConfiguration;
+import pl.inpost.api.domain.policies.DiscountPolicy;
+import pl.inpost.api.domain.policies.PolicyFactory;
 
 import java.util.List;
 import java.util.UUID;
 
 @Service
 @AllArgsConstructor
-public class DiscountService implements ApiInterface {
+class DiscountService implements DiscountServiceInterface {
     private final ProductService productService;
-    private final StrategyConfiguration strategyConfiguration;
+    private final PolicyFactory policyFactory;
 
     public Discount calculateDiscount(@NonNull UUID productId,
                                       @NonNull Long productCount,
@@ -24,7 +23,7 @@ public class DiscountService implements ApiInterface {
         var product = productService.getProduct(productId);
 
         var finalDiscount = product.getPrice();
-        List<DiscountStrategy> discountStrategies = getDiscountStrategies(productCount, policies);
+        List<DiscountPolicy> discountStrategies = getDiscountStrategies(productCount, policies);
         for (var discountStrategy : discountStrategies) {
             finalDiscount = discountStrategy.calculateDiscount(finalDiscount);
         }
@@ -37,10 +36,10 @@ public class DiscountService implements ApiInterface {
                 .build();
     }
 
-    private List<DiscountStrategy> getDiscountStrategies(@NonNull Long productCount,
-                                                         @NonNull List<Policy> policies) {
+    private List<DiscountPolicy> getDiscountStrategies(@NonNull Long productCount,
+                                                       @NonNull List<Policy> policies) {
         var discountStrategies = policies.stream()
-                .map(p -> strategyConfiguration.map(p, productCount))
+                .map(p -> policyFactory.createDiscountPolicy(p, productCount))
                 .toList();
         return discountStrategies;
     }
