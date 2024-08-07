@@ -27,7 +27,7 @@ class AmountBaseStrategyTest {
         );
 
         var discountLevelService = mock(DiscountLevelService.class);
-        when(discountLevelService.getDiscountLevels()).thenReturn(discountLevels);
+        when(discountLevelService.getDiscountLevels(Policy.AMOUNT_BASED)).thenReturn(discountLevels);
         //when
         var priceAfterDiscount = new AmountBaseStrategy(productCount, discountLevelService).calculateDiscount(inputPrice);
         //then
@@ -46,7 +46,7 @@ class AmountBaseStrategyTest {
         );
 
         var discountLevelService = mock(DiscountLevelService.class);
-        when(discountLevelService.getDiscountLevels()).thenReturn(discountLevels);
+        when(discountLevelService.getDiscountLevels(Policy.AMOUNT_BASED)).thenReturn(discountLevels);
         try {
             //when
             new AmountBaseStrategy(productCount, discountLevelService).calculateDiscount(inputPrice);

@@ -11,9 +11,11 @@ import pl.inpost.api.domain.repositories.service.ProductDAOService;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.StringJoiner;
 import java.util.UUID;
 
-import static pl.inpost.api.domain.helpers.DiscountParameterHelper.*;
+import static pl.inpost.api.domain.helpers.DiscountParameterHelper.discountParameterForAmount;
+import static pl.inpost.api.domain.helpers.DiscountParameterHelper.discountParameterForPercentage;
 import static pl.inpost.api.domain.model.Price.DenominationEnum.PLN;
 
 @Component
@@ -64,10 +66,18 @@ public class AppInit implements ApplicationListener<ApplicationReadyEvent> {
 
         List<DiscountLevel> savedDiscountLevels = discountLevelDAOService.save(amountDiscountLevels);
         log.info("Database saved discountLevels:");
-        savedDiscountLevels.forEach(dl -> log.info("productCount: {}\tpriceValue: {}\tpriceDenomination: {}\tpolicy: {}", dl.productCount(), dl.discountParameters().stream().map(p->String.format("{}={}",p.name().name(),p.value())), dl.policy()));
+        savedDiscountLevels.forEach(dl -> log.info("productCountThreshold: {}\tparameters: {}\tpolicy: {}", dl.productCountThreshold(), printParameters(dl.discountParameters()), dl.policy()));
 
         List<DiscountLevel> savedPercentageDiscountLevels = discountLevelDAOService.save(percentageDiscountLevels);
-        savedPercentageDiscountLevels.forEach(dl -> log.info("productCount: {}\tpriceValue: {}\tpriceDenomination: {}\tpolicy: {}", dl.productCount(), dl.discountParameters().stream().map(p->String.format("{}={}",p.name().name(),p.value())), dl.policy()));
+        savedPercentageDiscountLevels.forEach(dl -> log.info("productCountThreshold: {}\tparameters: {}\tpolicy: {}", dl.productCountThreshold(), printParameters(dl.discountParameters()), dl.policy()));
 
+    }
+
+    private String printParameters(List<DiscountParameter> discountParameters) {
+        var stringJoiner = new StringJoiner(" | ");
+        discountParameters.stream()
+                .map(dp -> dp.name().name() + ":" + dp.value())
+                .forEach(s -> stringJoiner.add(s));
+        return stringJoiner.toString();
     }
 }

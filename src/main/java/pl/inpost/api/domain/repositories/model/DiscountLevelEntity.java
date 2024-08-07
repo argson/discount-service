@@ -9,6 +9,7 @@ import pl.inpost.api.domain.model.Policy;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
+@IdClass(DiscountLevelKey.class)
 public class DiscountLevelEntity {
     @NonNull
     @Id
@@ -18,6 +19,7 @@ public class DiscountLevelEntity {
     private String discountParameters;
 
     @NonNull
+    @Id
     @Enumerated(EnumType.ORDINAL)
     private Policy policy;
 }

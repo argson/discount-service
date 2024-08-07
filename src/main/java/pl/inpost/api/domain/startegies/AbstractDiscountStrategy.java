@@ -3,6 +3,7 @@ package pl.inpost.api.domain.startegies;
 import lombok.NonNull;
 import pl.inpost.api.domain.model.DiscountLevel;
 import pl.inpost.api.domain.model.DiscountParameter;
+import pl.inpost.api.domain.model.Policy;
 import pl.inpost.api.domain.model.Price;
 import pl.inpost.api.domain.services.DiscountLevelService;
 
@@ -14,9 +15,9 @@ public abstract class AbstractDiscountStrategy implements DiscountStrategy {
 
     protected AbstractDiscountStrategy(@NonNull Long productCount,
                                        @NonNull DiscountLevelService discountLevelService) {
-        var discountLevels = discountLevelService.getDiscountLevels();
+        var discountLevels = discountLevelService.getDiscountLevels(Policy.AMOUNT_BASED);
         discountParameters = discountLevels.stream()
-                .filter(dl -> dl.productCount().compareTo(productCount) <= 0)
+                .filter(dl -> dl.productCountThreshold().compareTo(productCount) <= 0)
                 .max(DiscountLevel::compareTo)
                 .map(DiscountLevel::discountParameters)
                 .orElse(Collections.emptyList());

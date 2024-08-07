@@ -9,7 +9,6 @@ import pl.inpost.api.domain.model.DiscountParameter;
 import pl.inpost.api.domain.repositories.model.DiscountLevelEntity;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 @Mapper(componentModel = "spring")
@@ -32,7 +31,7 @@ public interface DiscountLevelEntityMapper {
     default DiscountLevelEntity mapTo(DiscountLevel source) {
         var objectMapper = new ObjectMapper();
         return new DiscountLevelEntity(
-                source.productCount(),
+                source.productCountThreshold(),
                 objectMapper.writeValueAsString(source.discountParameters()),
                 source.policy()
         );

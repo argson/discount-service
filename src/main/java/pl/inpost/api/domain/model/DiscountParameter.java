@@ -5,7 +5,7 @@ import java.io.Serializable;
 
 
 public record DiscountParameter(DiscountParameter.ParameterName name,
-                                Object value) implements Serializable {
+                                String value) implements Serializable {
     @Serial
     private static final long serialVersionUID = 0L;
 

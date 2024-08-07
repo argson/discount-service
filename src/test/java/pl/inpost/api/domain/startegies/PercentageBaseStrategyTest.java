@@ -11,6 +11,8 @@ import pl.inpost.api.domain.services.DiscountLevelService;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static pl.inpost.api.domain.helpers.DiscountParameterHelper.*;
@@ -33,7 +35,7 @@ class PercentageBaseStrategyTest {
         );
 
         var discountLevelService = mock(DiscountLevelService.class);
-        when(discountLevelService.getDiscountLevels()).thenReturn(discountLevels);
+        when(discountLevelService.getDiscountLevels(any(Policy.class))).thenReturn(discountLevels);
         //when
         var priceAfterDiscount = new PercentageBaseStrategy(productCount, discountLevelService).calculateDiscount(inputPrice);
         //then

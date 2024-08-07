@@ -9,14 +9,14 @@ import pl.inpost.api.domain.services.DiscountLevelService;
 @Component
 @RequiredArgsConstructor
 public class StrategyConfiguration {
-    private final DiscountLevelDAOService discountLevelDAOService;
+    private final DiscountLevelService discountLevelService;
 
     public DiscountStrategy map(Policy policy, Long productCount) {
         return switch (policy) {
             case AMOUNT_BASED ->
-                    new AmountBaseStrategy(productCount, new DiscountLevelService(policy, discountLevelDAOService));
+                    new AmountBaseStrategy(productCount, discountLevelService);
             case PERCENTAGE_BASED ->
-                    new PercentageBaseStrategy(productCount, new DiscountLevelService(policy, discountLevelDAOService));
+                    new PercentageBaseStrategy(productCount, discountLevelService);
         };
     }
 }

@@ -30,7 +30,7 @@ class DiscountLevelEntityMapperTest {
         var priceDiscountLevel = mapper.mapFrom(discountLevelEntity);
         //then
         Assertions.assertThat(priceDiscountLevel)
-                .extracting(DiscountLevel::productCount, DiscountLevel::discountParameters)
+                .extracting(DiscountLevel::productCountThreshold, DiscountLevel::discountParameters)
                 .contains(10L, discountParameters);
     }
 
@@ -48,7 +48,7 @@ class DiscountLevelEntityMapperTest {
         var priceDiscountLevel = mapper.mapFrom(discountLevelEntity);
         //then
         Assertions.assertThat(priceDiscountLevel)
-                .extracting(DiscountLevel::productCount, DiscountLevel::discountParameters)
+                .extracting(DiscountLevel::productCountThreshold, DiscountLevel::discountParameters)
                 .contains(10L, discountParameters);
     }
 }

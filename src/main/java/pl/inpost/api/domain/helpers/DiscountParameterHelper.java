@@ -12,17 +12,17 @@ import static pl.inpost.api.domain.model.DiscountParameter.ParameterName.*;
 
 public class DiscountParameterHelper {
     public static Price.DenominationEnum getDenomination(List<DiscountParameter> discountParameters) {
-        var value = (String) getParameter(discountParameters, DENOMINATION).value();
+        var value = getParameter(discountParameters, DENOMINATION).value();
         return Price.DenominationEnum.valueOf(value);
     }
 
     public static BigDecimal getPriceValue(List<DiscountParameter> discountParameters) {
-        var value = (Double)getParameter(discountParameters, PRICE).value();
-        return BigDecimal.valueOf(value);
+        var value = getParameter(discountParameters, PRICE).value();
+        return BigDecimal.valueOf(Double.valueOf(value));
     }
 
     public static Integer getPercentageValue(List<DiscountParameter> discountParameters) {
-        return (Integer) getParameter(discountParameters, PERCENTAGE).value();
+        return Integer.valueOf(getParameter(discountParameters, PERCENTAGE).value());
     }
 
     public static boolean isUnavailableParameter(List<DiscountParameter> discountParameters, DiscountParameter.ParameterName expected) {
@@ -36,14 +36,14 @@ public class DiscountParameterHelper {
 
     public static List<DiscountParameter> discountParameterForAmount(Double value, Price.DenominationEnum denomination) {
         return List.of(
-                new DiscountParameter(PRICE, value),
+                new DiscountParameter(PRICE, String.valueOf(value)),
                 new DiscountParameter(DENOMINATION, denomination.name())
         );
     }
 
     public static List<DiscountParameter> discountParameterForPercentage(Integer value) {
         return List.of(
-                new DiscountParameter(PERCENTAGE, value)
+                new DiscountParameter(PERCENTAGE, String.valueOf(value))
         );
     }
 }

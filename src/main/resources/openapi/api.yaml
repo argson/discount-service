@@ -3,7 +3,7 @@ info:
   version: 1.0.0
   title: Discount Management API
 paths:
-  /calculate-discount:
+  /calculateDiscount:
     get:
       summary: Calculate discount for requested product count
       operationId: calculateDiscount
@@ -17,7 +17,7 @@ paths:
           schema:
             type: string
             format: uuid
-        - name: productCount
+        - name: productCountThreshold
           in: query
           description: Ordered product count
           required: true
@@ -47,7 +47,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorDTO"
-  /policy/discounts-levels:
+  /policy/discountsLevels:
     get:
       summary: Get discount levels for policy
       operationId: getDiscountLevels
@@ -81,18 +81,24 @@ paths:
       tags:
         - discountPolicy
       parameters:
-        - name: policy
-          in: query
-          description: Policy for discounts
-          required: true
-          schema:
-            $ref: '#/components/schemas/PolicyDTO'
-        - name: discountLevel
-          in: query
-          description: product count threshold to remove
-          required: true
-          schema:
-            $ref: '#/components/schemas/DiscountLevelDTO'
+      - name: policy
+        in: query
+        description: Policy for discounts
+        required: true
+        schema:
+          $ref: '#/components/schemas/PolicyDTO'
+      requestBody:
+        description: Product discount levels
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DiscountLevelDTO'
+            example:
+              productCountThreshold": 100
+              discountParameters":
+                - name: "PRICE"
+                  value: "10"
       responses:
         '201':
           description: DiscountLeve has been add or changed
@@ -208,9 +214,21 @@ components:
         productCountThreshold:
           type: number
           format: int64
-        discountValue:
+        discountParameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiscountParameterDTO'
+    DiscountParameterDTO:
+      type: object
+      properties:
+        name:
           type: string
-          format: json
+          enum:
+            - PRICE
+            - DENOMINATION
+            - PERCENTAGE
+        value:
+          type: string
     ErrorDTO:
       type: object
       required:
